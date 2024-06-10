@@ -5,6 +5,7 @@
 -----
 
  단톡방에서 내가 나눈 대화를 학습하여, 마치 내가 말하는 것과 같은 챗봇을 구현하는 것을 목표로 하고 있습니다.
+ 
  기본적인 NLP모델이나, LLM을 이용하여 학습한 후 배포하는것 까지를 목표로 하고 있습니다.
 
  대화에 관한 내용은 개인정보이므로 업로드하지 않았습니다.
@@ -33,11 +34,13 @@
 <img src="https://img.shields.io/badge/Line-00C300?style=for-the-badge">
 
 친구들과의 단톡방이 있는 LINE에서 데이터를 .txt파일로 추출함
+
 2020년 12월 4일부터 2024년 6월 5일까지의 데이터 (1279일)
 
 <img src="https://github.com/GuhyupLee/GuhyupBot/assets/160453988/fa1756d9-113f-41e6-9fa3-10db6521b708">
 
 시간, 보낸 사람, 메세지의 형식으로 저장되어 있음
+
 채팅의 정보 수집은 단톡방 인원 5명의 동의를 전부 받음
 
 
@@ -48,7 +51,9 @@
 <img width="411" alt="image" src="https://github.com/GuhyupLee/GuhyupBot/assets/160453988/19832cce-b6cc-42f6-ba0f-72ec4c4c4fa3">
 
 최종적으로, 날짜와 시간을 기록한 DataTime, 수신인을 기록한 Sender, 메세지를 기록한 Message. 총 3개의 Column으로 DataFrame을 완성
+
 Row의 수는 474,706개
+
 Sender는 이니셜 및 적절한 영어로 대체함
 
 ## 데이터 전처리
@@ -56,6 +61,7 @@ Sender는 이니셜 및 적절한 영어로 대체함
 (preprocessing.ipynb)
 
 그저 시간순으로 나열된 대화 로그에서 중요한건, 어디서 어디까지가 일련의 '대화'인지 알아내는것이었다.
+
 일단 나(LSN)의 말투를 쓰는 봇을 개발하기 위함이므로 다음 요소를 고려함
 
 - 대화를 내가 시작한 경우를 제외함
@@ -130,6 +136,7 @@ def refine_conversation(df):
 
 
 총 72,935개의 대화 묶음(상대방의 대화 전송 -> 나의 답변)을 생성하였음.
+
 547행과 같이 맥락에서 벗어난 대화 묶음도 존재하지만, 대체적으로는 잘 전처리 되었다고 봄
 
 문제점은, 이것을 수치화할 방법을 찾지 못하였음.
@@ -141,9 +148,11 @@ def refine_conversation(df):
 (Lora.ipynb)
 
 [학습에 이용한 모델] (https://huggingface.co/beomi/Llama-3-Open-Ko-8B-Instruct-preview/tree/main)
+
 [학습에 도움을 준 링크] (https://hypro2.github.io/llama2-lemon/)
 
 모델을 처음부터 파인튜닝 하기에는 데이터셋의 양이 많지않고, 목적에도 맞지 않다고 생각하였음
+
 따라서 LoRA(low-rank adaptation of large language models)를 이용하여 학습을 시도함
 
 대략적인 방법은 비슷했으나, 데이터셋을 구성하는 방식에 큰 차이가 있었음.
@@ -165,4 +174,5 @@ JSON파일을 재정의 하여, 이를 극복함
 ## 문제점 및 느낀점.
 
 처음 데이터 전처리에 6시간이라는 많은 시간이 소요된다고 나옴 -> 코드의 문제점을 해결하고, 짧은 시간으로 줄일 수 있었다.
+
 LoRA로 학습한 결과가 생각보다 멍청함 -> 모든 Layer를 사용한게 문제가 아닐까 생각중이다.
